@@ -19,7 +19,7 @@ return [
     ],
     'STATUS_SUCCESS'=>'success',
     'STATUS_CODE'=>200,
-    "IMAGE_URL" => 'http://localhost/Levo/b2c/public/images/',
+    "IMAGE_URL" => env('APP_ENV') == 'local' ? 'http://localhost/Levo/b2c/public/images/' : "http://".$_SERVER['HTTP_HOST']."/images/",
     "IMAGE_ROOT_PATH" => $_SERVER['DOCUMENT_ROOT'].'/Levo/api/public/images/'
     
 
