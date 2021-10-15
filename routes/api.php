@@ -12,12 +12,14 @@
  */
 
 Route::group(array('prefix' => 'vendor'), function () {
-    Route::post('getvendorlist', 'VendorController@getVendorList'); 
+    Route::post('getvendorlist', 'VendorController@getVendorList');
     Route::post('getproducts', 'VendorController@getProductList');
 });
 Route::group(array('prefix' => 'order'), function () {
-    Route::post('blockorder', 'OrderController@blockOrder');  
+    Route::post('blockorder', 'OrderController@blockOrder');
 });
 Route::group(array('prefix' => 'user'), function () {
     Route::post('auth', 'UserController@auth');
+    Route::post('register', 'UserController@userRegistraion');
+    Route::post('addEditAddress', 'UserController@addEditAddress');
 });

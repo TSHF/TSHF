@@ -73,8 +73,59 @@ class UserEntity
         }
 
     }
-    public function getUserLocation($userId, $locId)
-    {
+    public function getCreateUser($userDetail){
+        try{
+            $user = $this->db->table('users')
+                ->select('user_id')
+                ->where(function ($query) use ($userDetail) {
+                    $query->where('email', '=', $userDetail['email'])
+                          ->orWhere('mobile', '=', $userDetail['mobile']);
+                })->first();
+                if(!empty($user)){
+                    throw new \App\Exceptions\ApiExceptions('User already registered.', 201);
+                }
+                $userDetail['type']='user';
+                $userDetail['username']=$userDetail['mobile'];
+                $userDetail['password']=md5($userDetail['mobile']);
+                $userDetail['is_verified']=0;
+                $userDetail['created_on']=date('Y-m-d H:i:s');
+                $resp = $this->db->table('users')->insertGetId($userDetail);
+                if ($resp) {
+                    return array('message'=>'User Created Successfuly.','userId'=>$resp,'token'=>$this->genrateToken($resp));
+                } else {
+                    throw new \App\Exceptions\ApiExceptions("Something went wrong.", 600);
+                }
+        } catch (QueryException $exp) {
+            report($exp);
+            throw new \App\Exceptions\ApiExceptions($exp->getMessage(), 600);
+        }
+    }
 
+    public function validateUser($userId){
+        return $this->db->table('users')
+        ->select('user_id')
+        ->where('user_id', $userId)
+        ->where('status', 1)
+        ->first();
+    }
+
+    public function addEditAddress($locations){
+        try{
+            foreach($locations as $loc){
+                if($loc['location_id'] == 0){
+                  $resp =  $this->db->table('location')->insertGetId($loc);
+                }else{
+                    $resp = $this->db->table('location')->where('location_id',$loc['location_id'])->update($loc);
+                }
+            }
+            if ($resp) {
+                return array('message'=>'Locations Created Successfuly.');
+            } else {
+                throw new \App\Exceptions\ApiExceptions("Something went wrong.", 600);
+            }
+        } catch (QueryException $exp) {
+            report($exp);
+            throw new \App\Exceptions\ApiExceptions($exp->getMessage(), 600);
+        }
     }
 }

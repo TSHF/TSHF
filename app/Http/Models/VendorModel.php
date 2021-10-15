@@ -49,6 +49,7 @@ class VendorModel
             foreach ($result as $val) {
                 if (!isset($resp[$val['id']])) {
                     $data                = array();
+                    $data['productId']   = $val['id'];
                     $data['type']        = $val['type'];
                     $data['name']        = $val['name'];
                     $data['description'] = $val['description'];
